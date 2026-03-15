@@ -1,0 +1,4 @@
+venv/
+__pycache__/
+.env
+output_polarity_map.pptx
