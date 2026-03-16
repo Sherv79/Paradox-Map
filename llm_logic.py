@@ -5,18 +5,20 @@ import os
 
 from dotenv import load_dotenv
 import anthropic
-from PIL import Image
+from PIL import Image, ImageOps
 
 load_dotenv()
 
 from models import AnalysisResult
-from prompts import VISION_WORKSHOP_EXTRACTION_PROMPT, POLARITY_MAP_GENERATION_PROMPT
+from prompts import VISION_WORKSHOP_EXTRACTION_PROMPT, POLARITY_MAP_GENERATION_PROMPT, QUESTIONNAIRE_GENERATION_PROMPT
 
 MODEL = "claude-sonnet-4-20250514"
 
 
 def compress_image(image: Image.Image, max_size_bytes: int = 4_500_000) -> Image.Image:
     """Resize image until it fits within the API size limit."""
+    # Apply EXIF orientation so rotated phone photos are sent upright
+    image = ImageOps.exif_transpose(image)
     # Convert to RGB if necessary (e.g. RGBA PNGs)
     if image.mode in ("RGBA", "P"):
         image = image.convert("RGB")
@@ -116,6 +118,8 @@ def generate_polarity_map(extraction_json: str) -> AnalysisResult:
 
 {POLARITY_MAP_GENERATION_PROMPT}
 
+WICHTIGE REGEL: Übernimm die Pol-Namen (pole_a_guess und pole_b_guess) aus der Rohextraktion. Du darfst die Formulierung leicht glätten, aber die inhaltliche Bedeutung MUSS erhalten bleiben. Erfinde KEINE neuen oder anderen Pole. Die Pole wurden im Workshop von den Teilnehmern erarbeitet und dürfen nicht verändert werden. Gleiches gilt für die Vorteile und Nachteile — bleibe so nah wie möglich an den Original-Notizen aus dem Workshop.
+
 WICHTIG: Gib das Ergebnis als ein einziges valides JSON-Objekt zurueck.
 Kein Markdown, keine Code-Fences, kein zusaetzlicher Text.
 
@@ -167,4 +171,41 @@ Alle Texte auf Deutsch.
         return AnalysisResult(
             success=False,
             message=f"Error during polarity map generation: {e}",
+        )
+
+
+def generate_questionnaire_items(polarity_map_json: str) -> AnalysisResult:
+    """
+    Step 3: Generate assessment questionnaire items from the finished polarity map JSON.
+    Returns JSON with closed_items (list of {quadrant, item}) and open_questions (list of str).
+    """
+    prompt = f"""Hier ist die fertige Polarity Map als JSON:
+
+{polarity_map_json}
+
+---
+
+{QUESTIONNAIRE_GENERATION_PROMPT}
+"""
+
+    try:
+        client = anthropic.Anthropic()
+
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=4096,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+        )
+        text = response.content[0].text
+        return AnalysisResult(success=True, message=text)
+
+    except Exception as e:
+        return AnalysisResult(
+            success=False,
+            message=f"Fehler bei der Fragebogen-Generierung: {e}",
         )

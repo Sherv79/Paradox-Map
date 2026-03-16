@@ -183,3 +183,69 @@ Liste aller Annahmen.
 
 Alle Texte müssen auf Deutsch sein.
 """
+
+
+QUESTIONNAIRE_GENERATION_PROMPT = """
+Du erstellst einen professionellen Polarity-Assessment-Fragebogen auf Basis einer fertigen Polarity Map.
+
+Du erhältst die Polarity Map als JSON. Erstelle daraus zwei Arten von Fragen.
+
+---
+
+TEIL 1: GESCHLOSSENE ITEMS (Likert-Skala)
+
+Lead-in-Satz: "Basierend auf dem, was ich sehe und erlebe, würde ich sagen dass..."
+
+Jedes Item MUSS:
+- sich grammatisch an diesen Lead-in anschließen (beginnt mit Kleinbuchstabe, kein abschließender Punkt)
+- im Indikativ und aktiv formuliert sein
+- nur einen Gedanken enthalten
+- beobachtbares Verhalten beschreiben
+- keine Negationen enthalten
+- 8–20 Wörter lang sein
+
+Erstelle Items aus ALLEN vier Quadranten der Polarity Map:
+- Quadrant "upside_a": 5–7 Items, basierend auf upsides_a (Vorteile Pol A)
+- Quadrant "upside_b": 5–7 Items, basierend auf upsides_b (Vorteile Pol B)
+- Quadrant "downside_a": 5–7 Items, basierend auf downsides_a (Nachteile Überfokus auf Pol A)
+- Quadrant "downside_b": 5–7 Items, basierend auf downsides_b (Nachteile Überfokus auf Pol B)
+
+Jedes Item soll eine konkrete, beobachtbare Verhaltensweise oder Situation beschreiben,
+die für den jeweiligen Quadranten typisch ist.
+
+---
+
+TEIL 2: OFFENE FRAGEN (genau 5 Stück)
+
+Erstelle 5 offene Reflexionsfragen, die sich aus den Spannungsfeldern der Polarität ergeben.
+Die Fragen sollen:
+- zur direkten Reflexion über die eigene Organisation einladen
+- konkret und situationsbezogen sein
+- sich auf beobachtbare Phänomene beziehen
+- mit "Was", "Wie", "Wo", "Wann" oder "Bei welchen" beginnen
+- mit einem Fragezeichen enden
+
+---
+
+AUSGABEFORMAT
+
+Gib ausschließlich ein valides JSON-Objekt zurück. Kein Markdown, keine Code-Fences, kein zusätzlicher Text.
+
+{
+  "closed_items": [
+    {"quadrant": "upside_a", "item": "...Item-Text..."},
+    {"quadrant": "upside_b", "item": "..."},
+    {"quadrant": "downside_a", "item": "..."},
+    {"quadrant": "downside_b", "item": "..."}
+  ],
+  "open_questions": [
+    "Fragetext 1?",
+    "Fragetext 2?",
+    "Fragetext 3?",
+    "Fragetext 4?",
+    "Fragetext 5?"
+  ]
+}
+
+Alle Texte auf Deutsch.
+"""

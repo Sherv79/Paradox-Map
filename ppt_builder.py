@@ -30,11 +30,14 @@ PLACEHOLDER_MAP = {
 NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
 
-def _make_paragraph_xml(text: str, lang: str = "de-DE", font_size: int = 1100) -> etree._Element:
+def _make_paragraph_xml(text: str, lang: str = "de-DE", font_size: int = 1100, numbered: bool = False) -> etree._Element:
     """Create a single <a:p> element with a run containing the given text."""
     p = etree.SubElement(etree.Element("dummy"), f"{{{NS}}}p")
     pPr = etree.SubElement(p, f"{{{NS}}}pPr")
     pPr.set("lvl", "0")
+    if numbered:
+        buAutoNum = etree.SubElement(pPr, f"{{{NS}}}buAutoNum")
+        buAutoNum.set("type", "arabicPeriod")
     r = etree.SubElement(p, f"{{{NS}}}r")
     rPr = etree.SubElement(r, f"{{{NS}}}rPr")
     rPr.set("lang", lang)
@@ -75,7 +78,7 @@ def _set_placeholder_list(slide, idx: int, items: List[str], font_size: int = 11
 
             # Add one paragraph per item
             for item in items:
-                new_p = _make_paragraph_xml(item, font_size=font_size)
+                new_p = _make_paragraph_xml(item, font_size=font_size, numbered=True)
                 txBody.append(new_p)
             return
 
