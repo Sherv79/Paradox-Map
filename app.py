@@ -1,6 +1,6 @@
 import streamlit as st
 
-from ui.shared import CSS, render_header, render_stepper
+from ui.shared import CSS, T, render_header, render_stepper
 from ui.step0_sparring import render_step0
 from ui.step1_upload import render_step1
 from ui.step2_review import render_step2
@@ -19,12 +19,10 @@ def main() -> None:
     defaults = {
         "current_step": 0,
         "workshop_context": None,
-        "sparring_phase": 1,
-        "sparring_input_1": "",
-        "sparring_response": None,
-        "sparring_input_2": "",
-        "sparring_summary": None,
-        "sparring_editing": False,
+        "ctx_branche": "",
+        "ctx_hierarchie": "C-Level/Vorstand",
+        "ctx_teilnehmer": 0,
+        "ctx_anlass": "",
         "uploaded_image": None,
         "uploaded_filename": None,
         "step2_result": None,
@@ -37,6 +35,12 @@ def main() -> None:
         "zip_bytes": None,
         "step1_error": None,
         "step2_error": None,
+        "sparring_phase": 1,
+        "sparring_editing": False,
+        "sparring_input_1": "",
+        "sparring_input_2": "",
+        "sparring_response": None,
+        "sparring_summary": None,
     }
     for key, val in defaults.items():
         if key not in st.session_state:
