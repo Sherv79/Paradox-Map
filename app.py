@@ -36,10 +36,9 @@ def main() -> None:
         "step1_error": None,
         "step2_error": None,
         "sparring_phase": 1,
-        "sparring_editing": False,
         "sparring_input_1": "",
         "sparring_input_2": "",
-        "sparring_response": None,
+        "sparring_response_text": None,
         "sparring_summary": None,
     }
     for key, val in defaults.items():

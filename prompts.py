@@ -261,7 +261,10 @@ Ein Berater beschreibt dir den Kontext eines Workshops. Deine Aufgabe:
    - Vorgeschichte oder Auslöser des Themas
    - Erwartungen oder Haltung der Teilnehmer
    - Organisatorische Rahmenbedingungen die relevant sein könnten
+   - Was das Ziel des Workshops ist (z.B. Bewusstseinsbildung, Einigung auf ein Modell, Entscheidungsfindung)
 3. Nummeriere die Fragen (1., 2., 3.).
+
+Wichtig: Jede Frage enthält nur EINEN Gedanken. Keine Doppelfragen mit "und" oder Gedankenstrichen. Wenn du zwei Dinge wissen willst, mach zwei separate Fragen daraus.
 
 Antworte auf Deutsch. Sei präzise und professionell, nicht zu förmlich.
 Kein JSON, kein Markdown-Codeblock — einfach Fließtext mit nummerierten Fragen."""

@@ -17,40 +17,17 @@ def render_step0() -> None:
 
     phase = st.session_state.sparring_phase
 
-    # ── Phase 1: Initial context input (or edit mode with both inputs) ────
+    # ── Phase 1: Initial context input ─────────────────────────────────────
     if phase == 1:
-        editing = st.session_state.sparring_editing
-
-        if editing:
-            # Edit mode: show both previous inputs pre-filled
-            input_1 = st.text_area(
-                T["sparring_label_input1"],
-                value=st.session_state.sparring_input_1,
-                placeholder=T["sparring_placeholder"],
-                height=150,
-                key="sparring_edit_input_1",
-            )
-            st.markdown("")
-            input_2 = st.text_area(
-                T["sparring_label_input2"],
-                value=st.session_state.sparring_input_2,
-                placeholder=T["sparring_answer_placeholder"],
-                height=150,
-                key="sparring_edit_input_2",
-            )
-        else:
-            input_1 = st.text_area(
-                T["sparring_label_input1"],
-                value=st.session_state.sparring_input_1,
-                placeholder=T["sparring_placeholder"],
-                height=150,
-                key="sparring_fresh_input_1",
-            )
-            input_2 = None
+        input_1 = st.text_area(
+            T["sparring_label_input1"],
+            value=st.session_state.sparring_input_1,
+            placeholder=T["sparring_placeholder"],
+            height=150,
+            key="sparring_fresh_input_1",
+        )
 
         can_submit = bool(input_1 and input_1.strip())
-        if editing:
-            can_submit = can_submit and bool(input_2 and input_2.strip())
 
         st.markdown("<br>", unsafe_allow_html=True)
         _, col_btn, _ = st.columns([1, 2, 1])
@@ -61,31 +38,36 @@ def render_step0() -> None:
                 use_container_width=True,
                 disabled=not can_submit,
             ):
-                st.session_state.sparring_input_1 = input_1.strip()
-                if editing and input_2:
-                    st.session_state.sparring_input_2 = input_2.strip()
+                new_text = input_1.strip()
 
-                # Call sparring model
-                with st.spinner(T["status_sparring"]):
-                    result = sparring_response(st.session_state.sparring_input_1)
+                # Only call API if the text actually changed
+                if new_text != st.session_state.sparring_input_1 or not st.session_state.sparring_response_text:
+                    with st.spinner(T["status_sparring"]):
+                        result = sparring_response(new_text)
 
-                if result.success:
-                    st.session_state.sparring_response = result.message
-                    st.session_state.sparring_phase = 2
-                    st.session_state.sparring_editing = False
-                    st.rerun()
+                    if not result.success:
+                        st.error(result.message)
+                        return
+
+                    st.session_state.sparring_response_text = result.message
+                    st.session_state.sparring_input_1 = new_text
+                    # Reset phase-2 answers since questions changed
+                    st.session_state.sparring_input_2 = ""
                 else:
-                    st.error(result.message)
+                    st.session_state.sparring_input_1 = new_text
 
-    # ── Phase 2: Show model response + collect answers ────────────────────
+                st.session_state.sparring_phase = 2
+                st.rerun()
+
+    # ── Phase 2: Show cached model response + collect answers ──────────────
     elif phase == 2:
         # Show user's initial input
         with st.chat_message("user"):
             st.write(st.session_state.sparring_input_1)
 
-        # Show model's sparring response
+        # Show cached sparring response (never a new API call here)
         with st.chat_message("assistant"):
-            st.write(st.session_state.sparring_response)
+            st.write(st.session_state.sparring_response_text)
 
         st.markdown("")
         input_2 = st.text_area(
@@ -130,7 +112,7 @@ def render_step0() -> None:
             st.write(st.session_state.sparring_input_1)
 
         with st.chat_message("assistant"):
-            st.write(st.session_state.sparring_response)
+            st.write(st.session_state.sparring_response_text)
 
         with st.chat_message("user"):
             st.write(st.session_state.sparring_input_2)
@@ -160,8 +142,7 @@ def render_step0() -> None:
                 T["btn_nein_anpassen"],
                 use_container_width=True,
             ):
-                st.session_state.sparring_phase = 1
-                st.session_state.sparring_editing = True
-                st.session_state.sparring_response = None
+                # Go back to Phase 2 — cached response stays, answers stay
+                st.session_state.sparring_phase = 2
                 st.session_state.sparring_summary = None
                 st.rerun()
