@@ -249,3 +249,84 @@ Gib ausschließlich ein valides JSON-Objekt zurück. Kein Markdown, keine Code-F
 
 Alle Texte auf Deutsch.
 """
+
+
+SPARRING_PROMPT = """Du bist ein erfahrener Organisationsberater und Sparringspartner für Polarity Mapping.
+
+Ein Berater beschreibt dir den Kontext eines Workshops. Deine Aufgabe:
+
+1. Fasse den beschriebenen Kontext in 2–3 präzisen, professionellen Sätzen zusammen.
+2. Stelle dann maximal 3 gezielte Rückfragen, die für die Qualität der späteren Polarity Map wirklich relevant sind. Fokussiere dich auf:
+   - Welche Spannungsfelder im Workshop sichtbar wurden
+   - Vorgeschichte oder Auslöser des Themas
+   - Erwartungen oder Haltung der Teilnehmer
+   - Organisatorische Rahmenbedingungen die relevant sein könnten
+3. Nummeriere die Fragen (1., 2., 3.).
+
+Antworte auf Deutsch. Sei präzise und professionell, nicht zu förmlich.
+Kein JSON, kein Markdown-Codeblock — einfach Fließtext mit nummerierten Fragen."""
+
+
+SPARRING_SUMMARY_PROMPT = """Du bist ein erfahrener Organisationsberater und Sparringspartner für Polarity Mapping.
+
+Du hast bereits einen Dialog mit dem Berater geführt. Hier ist der bisherige Austausch:
+
+--- ERSTE EINGABE DES BERATERS ---
+{input_1}
+
+--- ANTWORTEN AUF DEINE RÜCKFRAGEN ---
+{input_2}
+
+---
+
+Deine Aufgabe:
+1. Fasse den gesamten Kontext in einem kompakten Absatz zusammen (4–6 Sätze). Integriere alle relevanten Informationen aus beiden Eingaben.
+2. Schließe mit genau dieser Frage ab: "Soll ich die Polarity Map auf Basis dieses Kontexts erstellen?"
+
+Antworte auf Deutsch. Sei präzise und professionell.
+Kein JSON, kein Markdown-Codeblock — einfach Fließtext."""
+
+
+CONTEXT_EXTRACTION_PROMPT = """Extrahiere aus dem folgenden Dialog zwischen Berater und System die strukturierten Kontextinformationen.
+
+--- ERSTE EINGABE DES BERATERS ---
+{input_1}
+
+--- ANTWORTEN AUF RÜCKFRAGEN ---
+{input_2}
+
+---
+
+Extrahiere folgende Felder als JSON:
+- "branche": Branche oder Unternehmenstyp (falls erkennbar, sonst "")
+- "hierarchieebene": Hierarchieebene der Teilnehmer (falls erkennbar, sonst "")
+- "teilnehmer_anzahl": Anzahl der Teilnehmer als Zahl (falls erkennbar, sonst 0)
+- "anlass": Anlass oder Problem des Workshops (kurz zusammengefasst)
+- "zusatzkontext": Alle weiteren relevanten Informationen die für die Polarity Map Generierung wichtig sind (Spannungsfelder, Erwartungen, Vorgeschichte etc.) — als zusammenhängender Text
+
+Gib ausschließlich ein valides JSON-Objekt zurück. Kein Markdown, keine Code-Fences.
+"""
+
+
+def build_contextual_prompt(base_prompt: str, context: dict) -> str:
+    """Prepend workshop context as a German text block before the base prompt."""
+    if not context:
+        return base_prompt
+
+    lines = ["KONTEXT DES WORKSHOPS:", ""]
+    if context.get("branche"):
+        lines.append(f"- Branche / Unternehmenstyp: {context['branche']}")
+    if context.get("hierarchieebene"):
+        lines.append(f"- Hierarchieebene der Teilnehmer: {context['hierarchieebene']}")
+    if context.get("teilnehmer_anzahl"):
+        lines.append(f"- Anzahl Teilnehmer: {context['teilnehmer_anzahl']}")
+    if context.get("anlass"):
+        lines.append(f"- Anlass / Problem des Workshops: {context['anlass']}")
+    if context.get("zusatzkontext"):
+        lines.append(f"- Zusätzlicher Kontext: {context['zusatzkontext']}")
+
+    lines.append("")
+    lines.append("Berücksichtige diesen Kontext bei der Formulierung aller Inhalte — passe Sprache, Abstraktionsgrad und Beispiele an die Branche, Hierarchieebene und den Anlass an.")
+
+    context_block = "\n".join(lines)
+    return f"{context_block}\n\n---\n\n{base_prompt}"
