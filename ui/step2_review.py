@@ -38,19 +38,19 @@ def render_step2() -> None:
         ca, cb = st.columns(2)
         with ca:
             st.markdown(f"**{label_a}**")
-            render_list_inputs("upsides_a", T["label_vorteil"], 5)
+            render_list_inputs("upsides_a", T["label_vorteil"], 3)
         with cb:
             st.markdown(f"**{label_b}**")
-            render_list_inputs("upsides_b", T["label_vorteil"], 5)
+            render_list_inputs("upsides_b", T["label_vorteil"], 3)
 
     with st.expander(T["section_downsides"]):
         ca, cb = st.columns(2)
         with ca:
             st.markdown(f"**{label_a}**")
-            render_list_inputs("downsides_a", T["label_nachteil"], 5)
+            render_list_inputs("downsides_a", T["label_nachteil"], 3)
         with cb:
             st.markdown(f"**{label_b}**")
-            render_list_inputs("downsides_b", T["label_nachteil"], 5)
+            render_list_inputs("downsides_b", T["label_nachteil"], 3)
 
     with st.expander(T["section_actions"]):
         ca, cb = st.columns(2)

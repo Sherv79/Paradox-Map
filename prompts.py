@@ -144,7 +144,23 @@ Regeln:
 - keine Negationen
 - keine Doppelgedanken
 
-Empfohlene Länge: 8–20 Wörter.
+Länge: Jedes Item maximal 8–12 Wörter. Kurz, prägnant, foliengerecht.
+Nicht: "die Dringlichkeit für Veränderungen von allen Beteiligten erkannt und akzeptiert wird"
+Sondern: "Veränderungsdringlichkeit wird von allen anerkannt"
+
+---
+
+Kontextspezifität
+
+Wenn ein Workshop-Kontext mitgeliefert wird, MÜSSEN die Items diesen Kontext widerspiegeln:
+- Verwende branchenspezifische Sprache und Beispiele (z.B. bei Pharma: Zulassungsprozesse, F&E-Zyklen, Compliance)
+- Beziehe dich auf die konkreten Spannungsfelder die im Kontext beschrieben werden
+- Wenn Lagerbildung oder Gruppendynamiken beschrieben sind, spiegle diese in den Downsides
+- Wenn ein Workshop-Ziel genannt ist (z.B. Bewusstseinsbildung), passe die Tonalität an — bei Bewusstseinsbildung eher explorative Formulierungen, bei Entscheidungsfindung eher handlungsorientierte
+
+Die Items sollen so klingen, als wären sie FÜR GENAU DIESE Organisation geschrieben — nicht für eine generische Vorlage.
+
+Deeper Fear: IMMER ein einzelner Satz, KEIN Doppelgedanke mit "oder". Formuliere die schlimmste systemische Konsequenz wenn BEIDE Pole vernachlässigt werden.
 
 ---
 

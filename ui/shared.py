@@ -578,8 +578,8 @@ def init_form_state(data: dict) -> None:
     st.session_state["f_pole_a"] = data.get("pole_a", "")
     st.session_state["f_pole_b"] = data.get("pole_b", "")
     for field, count in [
-        ("upsides_a", 5), ("downsides_a", 5), ("action_steps_a", 3), ("early_warnings_a", 3),
-        ("upsides_b", 5), ("downsides_b", 5), ("action_steps_b", 3), ("early_warnings_b", 3),
+        ("upsides_a", 3), ("downsides_a", 3), ("action_steps_a", 3), ("early_warnings_a", 3),
+        ("upsides_b", 3), ("downsides_b", 3), ("action_steps_b", 3), ("early_warnings_b", 3),
     ]:
         items = data.get(field, [])
         for i in range(count):
@@ -593,12 +593,12 @@ def collect_form_data() -> dict:
         "deeper_fear": st.session_state.get("f_deeper_fear", ""),
         "pole_a": st.session_state.get("f_pole_a", ""),
         "pole_b": st.session_state.get("f_pole_b", ""),
-        "upsides_a": [st.session_state.get(f"f_upsides_a_{i}", "") for i in range(5)],
-        "downsides_a": [st.session_state.get(f"f_downsides_a_{i}", "") for i in range(5)],
+        "upsides_a": [st.session_state.get(f"f_upsides_a_{i}", "") for i in range(3)],
+        "downsides_a": [st.session_state.get(f"f_downsides_a_{i}", "") for i in range(3)],
         "action_steps_a": [st.session_state.get(f"f_action_steps_a_{i}", "") for i in range(3)],
         "early_warnings_a": [st.session_state.get(f"f_early_warnings_a_{i}", "") for i in range(3)],
-        "upsides_b": [st.session_state.get(f"f_upsides_b_{i}", "") for i in range(5)],
-        "downsides_b": [st.session_state.get(f"f_downsides_b_{i}", "") for i in range(5)],
+        "upsides_b": [st.session_state.get(f"f_upsides_b_{i}", "") for i in range(3)],
+        "downsides_b": [st.session_state.get(f"f_downsides_b_{i}", "") for i in range(3)],
         "action_steps_b": [st.session_state.get(f"f_action_steps_b_{i}", "") for i in range(3)],
         "early_warnings_b": [st.session_state.get(f"f_early_warnings_b_{i}", "") for i in range(3)],
     }
