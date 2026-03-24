@@ -83,6 +83,32 @@ def _set_placeholder_list(slide, idx: int, items: List[str], font_size: int = 11
             return
 
 
+def build_powerpoint_simple(polarity_data: dict, template_path: Path, output_path: Path) -> Path:
+    """
+    Fill the simple polarity map template (without action steps / early warnings).
+
+    Uses only placeholders idx 14–21: gps, deeper_fear, pole_a, pole_b,
+    upsides_a/b, downsides_a/b.
+    """
+    prs = Presentation(str(template_path))
+    slide = prs.slides[0]
+
+    single_fields = ["gps", "deeper_fear", "pole_a", "pole_b"]
+    for field in single_fields:
+        if field in polarity_data and polarity_data[field]:
+            idx = PLACEHOLDER_MAP[field]
+            _set_placeholder_text(slide, idx, polarity_data[field])
+
+    list_fields = ["upsides_a", "upsides_b", "downsides_a", "downsides_b"]
+    for field in list_fields:
+        if field in polarity_data and polarity_data[field]:
+            idx = PLACEHOLDER_MAP[field]
+            _set_placeholder_list(slide, idx, polarity_data[field])
+
+    prs.save(str(output_path))
+    return output_path
+
+
 def build_powerpoint(polarity_data: dict, template_path: Path, output_path: Path) -> Path:
     """
     Fill the polarity map template with data from the LLM.

@@ -6,7 +6,8 @@ import streamlit as st
 from llm.generation import generate_questionnaire_items
 from ui.shared import (
     T,
-    TEMPLATE_PATH,
+    TEMPLATE_SIMPLE_PATH,
+    TEMPLATE_FULL_PATH,
     animate_progress,
     parse_json_robust,
     render_list_inputs,
@@ -79,22 +80,32 @@ def render_step2() -> None:
     col_ppt, col_next = st.columns(2)
 
     with col_ppt:
-        if st.session_state.get("ppt_bytes"):
-            st.download_button(
-                T["btn_ppt_download"],
-                data=st.session_state.ppt_bytes,
-                file_name=T["ppt_filename"],
-                mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                use_container_width=True,
-            )
+        if st.session_state.get("ppt_simple_bytes") and st.session_state.get("ppt_full_bytes"):
+            col_simple, col_full = st.columns(2)
+            with col_simple:
+                st.download_button(
+                    T["btn_ppt_download_simple"],
+                    data=st.session_state.ppt_simple_bytes,
+                    file_name=T["ppt_simple_filename"],
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    use_container_width=True,
+                )
+            with col_full:
+                st.download_button(
+                    T["btn_ppt_download_full"],
+                    data=st.session_state.ppt_full_bytes,
+                    file_name=T["ppt_full_filename"],
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    use_container_width=True,
+                )
         else:
-            if not TEMPLATE_PATH.exists():
+            if not (TEMPLATE_SIMPLE_PATH.exists() and TEMPLATE_FULL_PATH.exists()):
                 st.caption(T["error_template"])
             elif st.button(T["btn_ppt_create"], use_container_width=True):
                 with st.spinner(T["spinner_ppt"]):
-                    ppt = build_ppt_bytes()
-                if ppt:
-                    st.session_state.ppt_bytes = ppt
+                    result = build_ppt_bytes()
+                if result:
+                    st.session_state.ppt_simple_bytes, st.session_state.ppt_full_bytes = result
                     st.rerun()
                 else:
                     st.session_state.step2_error = T["error_ppt"]

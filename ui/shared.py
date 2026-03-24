@@ -8,10 +8,14 @@ import zipfile
 import streamlit as st
 from pathlib import Path
 
-from ppt_builder import build_powerpoint
+from ppt_builder import build_powerpoint, build_powerpoint_simple
 
 TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch_2.pptx"
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "output_polarity_map.pptx"
+TEMPLATE_SIMPLE_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch.pptx"
+TEMPLATE_FULL_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch_2.pptx"
+OUTPUT_SIMPLE_PATH = Path(__file__).resolve().parent.parent / "output_polarity_map_simple.pptx"
+OUTPUT_FULL_PATH = Path(__file__).resolve().parent.parent / "output_polarity_map_full.pptx"
 
 # ─── UI strings (German) ──────────────────────────────────────────────────────
 
@@ -29,6 +33,10 @@ T = {
     "btn_generate": "Polarity Map generieren",
     "btn_ppt_create": "PowerPoint erstellen",
     "btn_ppt_download": "PowerPoint herunterladen",
+    "btn_ppt_download_simple": "Map herunterladen (ohne Maßnahmen)",
+    "btn_ppt_download_full": "Map herunterladen (mit Maßnahmen)",
+    "ppt_simple_filename": "polarity_map_einfach.pptx",
+    "ppt_full_filename": "polarity_map_vollstaendig.pptx",
     "btn_next_questionnaire": "Weiter zu Fragebogen",
     "btn_copy_items": "Items herunterladen (.txt)",
     "btn_back": "Zurück",
@@ -664,25 +672,36 @@ def format_questionnaire_for_export(pole_a: str, pole_b: str) -> str:
     return "\n".join(lines)
 
 
-def build_ppt_bytes() -> bytes | None:
+def build_ppt_bytes() -> tuple[bytes, bytes] | None:
+    """Build both simple and full PowerPoint files. Returns (simple_bytes, full_bytes) or None."""
     try:
-        build_powerpoint(collect_form_data(), TEMPLATE_PATH, OUTPUT_PATH)
-        with open(OUTPUT_PATH, "rb") as f:
-            return f.read()
+        data = collect_form_data()
+        build_powerpoint_simple(data, TEMPLATE_SIMPLE_PATH, OUTPUT_SIMPLE_PATH)
+        build_powerpoint(data, TEMPLATE_FULL_PATH, OUTPUT_FULL_PATH)
+        with open(OUTPUT_SIMPLE_PATH, "rb") as f:
+            simple_bytes = f.read()
+        with open(OUTPUT_FULL_PATH, "rb") as f:
+            full_bytes = f.read()
+        return simple_bytes, full_bytes
     except Exception:
         return None
 
 
 def build_zip_bytes() -> bytes | None:
-    ppt = build_ppt_bytes()
-    if ppt is None:
-        return None
+    simple_ppt = st.session_state.get("ppt_simple_bytes")
+    full_ppt = st.session_state.get("ppt_full_bytes")
+    if simple_ppt is None or full_ppt is None:
+        result = build_ppt_bytes()
+        if result is None:
+            return None
+        simple_ppt, full_ppt = result
     pole_a = st.session_state.get("f_pole_a", "Pol A") or "Pol A"
     pole_b = st.session_state.get("f_pole_b", "Pol B") or "Pol B"
     txt = format_questionnaire_for_export(pole_a, pole_b)
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(T["ppt_filename"], ppt)
+        zf.writestr(T["ppt_simple_filename"], simple_ppt)
+        zf.writestr(T["ppt_full_filename"], full_ppt)
         zf.writestr(T["questionnaire_filename"], txt.encode("utf-8"))
     buf.seek(0)
     return buf.read()
