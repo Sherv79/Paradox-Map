@@ -4,12 +4,22 @@ import time
 import streamlit as st
 from PIL import Image, ImageOps
 
-from llm.extraction import analyze_workshop_image
+from llm.extraction import analyze_workshop_image, extract_text_from_pdfs, analyze_pdf_content
 from llm.generation import generate_polarity_map
 from ui.shared import T, animate_progress, parse_json_robust, init_form_state
 
 
 def render_step1() -> None:
+    if st.session_state.get("step1_error"):
+        st.error(st.session_state.pop("step1_error"))
+
+    if st.session_state.use_case == "whiteboard":
+        _render_whiteboard_mode()
+    elif st.session_state.use_case == "pdf":
+        _render_pdf_mode()
+
+
+def _render_whiteboard_mode() -> None:
     st.markdown(
         f'<p class="pm-section-header">{T["upload_header"]}</p>',
         unsafe_allow_html=True,
@@ -30,9 +40,6 @@ def render_step1() -> None:
         image = ImageOps.exif_transpose(Image.open(uploaded_file))
         st.session_state.uploaded_image = image
         st.session_state.uploaded_filename = uploaded_file.name
-
-    if st.session_state.get("step1_error"):
-        st.error(st.session_state.pop("step1_error"))
 
     # Button only appears once an image is loaded
     if st.session_state.get("uploaded_image") is None:
@@ -74,6 +81,111 @@ def render_step1() -> None:
                 progress_bar, status,
                 T["status_generate"],
                 45, 90, step_ms=250,
+            )
+
+            if not step2_result.success:
+                progress_bar.empty(); status.empty()
+                st.session_state.step1_error = f'{T["error_step2"]}: {step2_result.message}'
+                st.rerun()
+                return
+
+            progress_bar.progress(100)
+            status.markdown(
+                f'<p class="pm-status-done">{T["success_generation"]}</p>',
+                unsafe_allow_html=True,
+            )
+            time.sleep(0.4)
+
+            try:
+                polarity_data = parse_json_robust(step2_result.message)
+                st.session_state.step2_result = step2_result
+                st.session_state.polarity_data = polarity_data
+                init_form_state(polarity_data)
+                st.session_state.current_step = 2
+                st.rerun()
+            except json.JSONDecodeError:
+                progress_bar.empty(); status.empty()
+                st.session_state.step1_error = T["error_json"]
+                st.rerun()
+
+
+def _render_pdf_mode() -> None:
+    st.markdown(
+        f'<p class="pm-section-header">{T["pdf_upload_header"]}</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f'<p class="pm-description">{T["pdf_upload_description"]}</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    uploaded_pdfs = st.file_uploader(
+        T["pdf_upload_label"],
+        type=["pdf"],
+        accept_multiple_files=True,
+        label_visibility="collapsed",
+    )
+
+    # Optional: Pole vorgeben
+    with st.expander(T["pdf_poles_header"], expanded=False):
+        st.caption(T["pdf_poles_description"])
+        st.text_input("Pol A", key="custom_pole_a")
+        st.text_input("Pol B", key="custom_pole_b")
+
+    if not uploaded_pdfs:
+        return
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    _, col_btn, _ = st.columns([1, 2, 1])
+    with col_btn:
+        if st.button(T["btn_generate"], type="primary", use_container_width=True):
+            # Reset downstream state
+            for key in ("step2_result", "polarity_data", "questionnaire_result",
+                        "questionnaire_data", "ppt_simple_bytes", "ppt_full_bytes", "zip_bytes"):
+                st.session_state[key] = None
+            for flag in ("form_initialized", "questionnaire_initialized"):
+                st.session_state[flag] = False
+
+            progress_bar = st.progress(0)
+            status = st.empty()
+
+            # Stage 1: Text extrahieren (0 → 20%)
+            status.markdown(
+                f'<p class="pm-status">{T["status_pdf_extract"]}</p>',
+                unsafe_allow_html=True,
+            )
+            pdf_text = extract_text_from_pdfs(uploaded_pdfs)
+            progress_bar.progress(20)
+
+            # Stage 2: PDF analysieren (20 → 55%)
+            custom_poles = None
+            pole_a = st.session_state.get("custom_pole_a", "").strip()
+            pole_b = st.session_state.get("custom_pole_b", "").strip()
+            if pole_a and pole_b:
+                custom_poles = {"pole_a": pole_a, "pole_b": pole_b}
+
+            step1_result = animate_progress(
+                analyze_pdf_content,
+                (pdf_text, custom_poles),
+                progress_bar, status,
+                T["status_pdf_analyze"],
+                20, 55, step_ms=200,
+            )
+
+            if not step1_result.success:
+                progress_bar.empty(); status.empty()
+                st.session_state.step1_error = f'{T["error_step1"]}: {step1_result.message}'
+                st.rerun()
+                return
+
+            # Stage 3: Polarity Map generieren (55 → 90%)
+            step2_result = animate_progress(
+                generate_polarity_map,
+                (step1_result.message, st.session_state.get("workshop_context")),
+                progress_bar, status,
+                T["status_generate"],
+                55, 90, step_ms=250,
             )
 
             if not step2_result.success:

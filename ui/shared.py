@@ -102,6 +102,23 @@ T = {
     "lead_in_export": 'Lead-in: "Basierend auf dem, was ich sehe und erlebe, würde ich sagen dass..."',
     "closed_items_header": "=== GESCHLOSSENE ITEMS ===",
     "open_questions_header": "=== OFFENE FRAGEN ===",
+    "use_case_whiteboard": "Whiteboard-Foto aus Workshop",
+    "use_case_pdf": "PDF-Dokumente als Grundlage",
+    "pdf_upload_header": "PDF-Dokumente hochladen",
+    "pdf_upload_description": (
+        "Laden Sie ein oder mehrere PDF-Dokumente hoch. "
+        "Das System analysiert die Texte und erstellt daraus eine Polarity Map."
+    ),
+    "pdf_upload_label": "PDF-Dokumente hochladen",
+    "pdf_poles_header": "Optional: Pole vorgeben",
+    "pdf_poles_description": (
+        "Wenn Sie die Pole bereits kennen, können Sie sie hier eingeben. "
+        "Sonst leitet das System sie aus den Dokumenten ab."
+    ),
+    "btn_skip_sparring": "Überspringen → direkt zum Upload",
+    "status_pdf_extract": "Extrahiere Text aus PDFs...",
+    "status_pdf_analyze": "Analysiere Dokumente...",
+    "error_no_pdf": "Bitte mindestens ein PDF hochladen.",
 }
 
 # ─── CSS ──────────────────────────────────────────────────────────────────────

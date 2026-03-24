@@ -17,6 +17,21 @@ def render_step0() -> None:
 
     phase = st.session_state.sparring_phase
 
+    # ── Use Case selection — only in Phase 1 ───────────────────────────────
+    if phase == 1:
+        st.radio(
+            "Wie möchten Sie die Polarity Map erstellen?",
+            options=[T["use_case_whiteboard"], T["use_case_pdf"]],
+            key="use_case_radio",
+            horizontal=True,
+        )
+        if st.session_state.get("use_case_radio") == T["use_case_pdf"]:
+            st.session_state.use_case = "pdf"
+        else:
+            st.session_state.use_case = "whiteboard"
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
     # ── Phase 1: Initial context input ─────────────────────────────────────
     if phase == 1:
         input_1 = st.text_area(
@@ -58,6 +73,16 @@ def render_step0() -> None:
 
                 st.session_state.sparring_phase = 2
                 st.rerun()
+
+        # Skip sparring button — only for PDF use case
+        if st.session_state.use_case == "pdf":
+            st.markdown("<br>", unsafe_allow_html=True)
+            _, col_skip, _ = st.columns([1, 2, 1])
+            with col_skip:
+                if st.button(T["btn_skip_sparring"], use_container_width=True):
+                    st.session_state.workshop_context = None
+                    st.session_state.current_step = 1
+                    st.rerun()
 
     # ── Phase 2: Show cached model response + collect answers ──────────────
     elif phase == 2:

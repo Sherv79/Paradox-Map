@@ -41,6 +41,9 @@ def main() -> None:
         "sparring_input_2": "",
         "sparring_response_text": None,
         "sparring_summary": None,
+        "use_case": "whiteboard",
+        "custom_pole_a": "",
+        "custom_pole_b": "",
     }
     for key, val in defaults.items():
         if key not in st.session_state:
