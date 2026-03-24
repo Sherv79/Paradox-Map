@@ -90,8 +90,17 @@ Ergänze immer:
 GPS (Greater Purpose Statement)  
 Was wird möglich, wenn beide Pole gut genutzt werden?
 
-DF (Deeper Fear)  
+DF (Deeper Fear)
 Was droht systemisch, wenn die Polarität schlecht gemanagt wird?
+
+Längenbegrenzung GPS und DF:
+- GPS: Maximal 10–15 Wörter. Ein einziger klarer Satz. Keine Nebensätze, keine "sowohl...als auch"-Konstruktionen.
+  SCHLECHT: "Eine Vorstandskultur, die sowohl psychologische Sicherheit als auch konstruktive Auseinandersetzung ermöglicht und damit nachhaltige Integrationserfolge schafft."
+  GUT: "Nachhaltige Integration durch Balance von Innovation und Prozesssicherheit."
+
+- DF: Maximal 10–15 Wörter. Ein einziger schlimmster Fall. KEIN "oder", KEIN Doppelgedanke.
+  SCHLECHT: "Das Unternehmen verliert seine Innovationskraft oder scheitert an mangelnder Compliance."
+  GUT: "Die Organisation wird durch ungelöste Kulturkonflikte handlungsunfähig."
 
 ---
 

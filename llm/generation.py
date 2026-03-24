@@ -23,7 +23,12 @@ def generate_polarity_map(extraction_json: str, context: dict | None = None) -> 
 
 {generation_prompt}
 
-WICHTIGE REGEL: Übernimm die Pol-Namen (pole_a_guess und pole_b_guess) aus der Rohextraktion. Du darfst die Formulierung leicht glätten, aber die inhaltliche Bedeutung MUSS erhalten bleiben. Erfinde KEINE neuen oder anderen Pole. Die Pole wurden im Workshop von den Teilnehmern erarbeitet und dürfen nicht verändert werden. Gleiches gilt für die Vorteile und Nachteile — bleibe so nah wie möglich an den Original-Notizen aus dem Workshop.
+KRITISCHE REGEL — POLE NICHT VERÄNDERN:
+Die Pol-Namen aus der Rohextraktion (pole_a_guess und pole_b_guess) sind VERBINDLICH.
+Du darfst die Formulierung leicht glätten (z.B. Grammatik korrigieren), aber du darfst die Pole NICHT durch andere Konzepte ersetzen.
+Wenn die Rohextraktion "Agilität" und "Standardisierung" sagt, dann heißen die Pole "Agilität" und "Standardisierung" — NICHT "Harmonische Beziehungen" und "Klarheit und Kritikfähigkeit".
+Die Pole wurden im Workshop von den Teilnehmern erarbeitet. Sie zu ändern entwertet die Workshop-Arbeit.
+Gleiches gilt für die Vorteile und Nachteile — bleibe so nah wie möglich an den Original-Notizen.
 
 WICHTIG: Gib das Ergebnis als ein einziges valides JSON-Objekt zurueck.
 Kein Markdown, keine Code-Fences, kein zusaetzlicher Text.
