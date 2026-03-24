@@ -323,9 +323,9 @@ button[data-testid="baseButton-primary"][disabled] {
     color: #FFFFFF !important;
 }
 
-/* ── Buttons — Secondary (Black) ── */
+/* ── Buttons — Secondary (Dark Grey) ── */
 button[data-testid="baseButton-secondary"] {
-    background-color: #1A1A1A !important;
+    background-color: #4A4A4A !important;
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 8px !important;
@@ -334,6 +334,11 @@ button[data-testid="baseButton-secondary"] {
     font-size: 15px !important;
     transition: background-color 0.15s ease !important;
     width: 100% !important;
+}
+button[data-testid="baseButton-secondary"] p,
+button[data-testid="baseButton-secondary"] span,
+button[data-testid="baseButton-secondary"] div {
+    color: #FFFFFF !important;
 }
 button[data-testid="baseButton-secondary"]:hover {
     background-color: #333333 !important;
@@ -345,15 +350,15 @@ button[data-testid="baseButton-secondary"]:active {
     color: #FFFFFF !important;
 }
 button[data-testid="baseButton-secondary"]:focus {
-    background-color: #1A1A1A !important;
+    background-color: #4A4A4A !important;
     color: #FFFFFF !important;
     outline: none !important;
     box-shadow: none !important;
 }
 
-/* ── Download Buttons (black by default) ── */
+/* ── Download Buttons (dark grey by default) ── */
 [data-testid="stDownloadButton"] > button {
-    background-color: #1A1A1A !important;
+    background-color: #4A4A4A !important;
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 8px !important;
@@ -363,13 +368,18 @@ button[data-testid="baseButton-secondary"]:focus {
     width: 100% !important;
     transition: background-color 0.15s ease !important;
 }
+[data-testid="stDownloadButton"] > button p,
+[data-testid="stDownloadButton"] > button span,
+[data-testid="stDownloadButton"] > button div {
+    color: #FFFFFF !important;
+}
 [data-testid="stDownloadButton"] > button:hover {
     background-color: #333333 !important;
     color: #FFFFFF !important;
     border: none !important;
 }
 [data-testid="stDownloadButton"] > button:focus {
-    background-color: #1A1A1A !important;
+    background-color: #4A4A4A !important;
     color: #FFFFFF !important;
 }
 /* Primary download button (blue) */
@@ -466,6 +476,13 @@ button[data-testid="baseButton-secondary"]:focus {
     background-color: #FFFFFF !important;
     border-radius: 8px !important;
     list-style: none !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+[data-testid="stExpander"] > details > summary > span {
+    position: relative !important;
+    z-index: 1 !important;
+    background-color: #FFFFFF !important;
 }
 [data-testid="stExpander"] > details > summary p,
 [data-testid="stExpander"] > details > summary span {

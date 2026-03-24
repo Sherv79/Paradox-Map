@@ -30,10 +30,11 @@ def render_step3() -> None:
                 continue
             st.markdown(f"**{quadrant_labels[quadrant]}**")
             for i in range(count):
-                st.text_input(
+                st.text_area(
                     f"Item {i + 1}",
                     key=f"f_q_closed_{quadrant}_{i}",
                     label_visibility="collapsed",
+                    height=68,
                 )
             st.markdown("")
 
@@ -41,10 +42,11 @@ def render_step3() -> None:
     if open_count > 0:
         with st.expander(T["section_open_questions"], expanded=True):
             for i in range(open_count):
-                st.text_input(
+                st.text_area(
                     f"Frage {i + 1}",
                     key=f"f_q_open_{i}",
                     label_visibility="collapsed",
+                    height=68,
                 )
 
     st.markdown("<br>", unsafe_allow_html=True)
