@@ -476,13 +476,6 @@ button[data-testid="baseButton-secondary"]:focus {
     background-color: #FFFFFF !important;
     border-radius: 8px !important;
     list-style: none !important;
-    position: relative !important;
-    overflow: visible !important;
-}
-[data-testid="stExpander"] > details > summary > span {
-    position: relative !important;
-    z-index: 1 !important;
-    background-color: #FFFFFF !important;
 }
 [data-testid="stExpander"] > details > summary p,
 [data-testid="stExpander"] > details > summary span {
@@ -511,6 +504,14 @@ button[data-testid="baseButton-secondary"]:focus {
     padding: 4px 0 !important;
     background-color: #FFFFFF !important;
     margin-bottom: 12px !important;
+}
+/* Reset for border wrappers inside expanders (Streamlit internal) */
+[data-testid="stExpander"] [data-testid="stVerticalBlockBorderWrapper"] {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    margin-bottom: 0 !important;
 }
 
 /* ── Captions ── */
