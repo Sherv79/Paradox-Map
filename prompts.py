@@ -362,6 +362,44 @@ Gib ausschließlich ein valides JSON-Objekt zurück. Kein Markdown, keine Code-F
 """
 
 
+PDF_ANALYSIS_PROMPT = """Du analysierst Fachdokumente als Grundlage für eine Polarity Map.
+
+Du erhältst den Text aus einem oder mehreren PDF-Dokumenten. Deine Aufgabe ist es, die zentralen Spannungsfelder zu identifizieren und eine Polarity-Struktur abzuleiten.
+
+{pole_instruction}
+
+Analysiere die Dokumente und extrahiere:
+
+1. Die zentrale Polarität (zwei Pole) — beide müssen positiv und legitim formuliert sein
+2. Vorteile bei Fokus auf Pol A (3 Stück, jeweils max 8–12 Wörter)
+3. Vorteile bei Fokus auf Pol B (3 Stück, jeweils max 8–12 Wörter)
+4. Nachteile bei Überfokus auf Pol A unter Vernachlässigung von Pol B (3 Stück, jeweils max 8–12 Wörter)
+5. Nachteile bei Überfokus auf Pol B unter Vernachlässigung von Pol A (3 Stück, jeweils max 8–12 Wörter)
+
+Wichtig:
+- Nutze NUR die Informationen aus den bereitgestellten Dokumenten
+- Suche NICHT im Internet nach zusätzlichen Informationen
+- Beziehe dich auf konkrete Inhalte, Modelle oder Konzepte aus den Texten
+- Formuliere kurz und prägnant (8–12 Wörter pro Item)
+
+Gib das Ergebnis als strukturiertes JSON zurück:
+
+{{
+  "pole_a_guess": "...",
+  "pole_b_guess": "...",
+  "notes_left": [],
+  "notes_right": [],
+  "upsides_a": [],
+  "upsides_b": [],
+  "downsides_a": [],
+  "downsides_b": []
+}}
+
+Alle Texte müssen auf Deutsch sein.
+Antworte ausschließlich mit JSON.
+"""
+
+
 def build_contextual_prompt(base_prompt: str, context: dict) -> str:
     """Prepend workshop context as a German text block before the base prompt."""
     if not context:

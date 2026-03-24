@@ -2,6 +2,7 @@ import base64
 import io
 
 import anthropic
+import pdfplumber
 from PIL import Image, ImageOps
 
 from llm import MODEL_FAST
@@ -93,3 +94,75 @@ def analyze_workshop_image(image: Image.Image) -> AnalysisResult:
 
     except Exception as e:
         return AnalysisResult(success=False, message=f"Error during image analysis: {e}")
+
+
+def extract_text_from_pdfs(pdf_files: list) -> str:
+    """Extract text from one or more uploaded PDF files. Returns concatenated text with document separators."""
+    all_texts = []
+    for pdf_file in pdf_files:
+        try:
+            with pdfplumber.open(pdf_file) as pdf:
+                doc_text = []
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text:
+                        doc_text.append(text)
+                filename = getattr(pdf_file, 'name', 'Unbekannt')
+                all_texts.append(f"=== DOKUMENT: {filename} ===\n\n" + "\n\n".join(doc_text))
+        except Exception as e:
+            filename = getattr(pdf_file, 'name', 'Unbekannt')
+            all_texts.append(f"=== DOKUMENT: {filename} ===\n\n[Fehler beim Lesen: {e}]")
+
+    full_text = "\n\n".join(all_texts)
+
+    # Truncate if too long (Claude context limit)
+    max_chars = 100_000
+    if len(full_text) > max_chars:
+        full_text = full_text[:max_chars] + "\n\n[... Text wurde gekürzt ...]"
+
+    return full_text
+
+
+def analyze_pdf_content(pdf_text: str, custom_poles: dict | None = None) -> AnalysisResult:
+    """
+    Analyze extracted PDF text and identify polarity structure.
+    If custom_poles provided, use them. Otherwise, derive poles from text.
+    Returns JSON in the same format as analyze_workshop_image.
+    """
+    from prompts import PDF_ANALYSIS_PROMPT
+
+    # Build pole instruction
+    if custom_poles and custom_poles.get("pole_a") and custom_poles.get("pole_b"):
+        pole_instruction = (
+            f"Die Pole sind bereits festgelegt:\n"
+            f"Pol A = '{custom_poles['pole_a']}'\n"
+            f"Pol B = '{custom_poles['pole_b']}'\n"
+            f"Verwende genau diese Pole und leite die Inhalte der Quadranten aus den Dokumenten ab."
+        )
+    else:
+        pole_instruction = (
+            "Leite die zentrale Polarität selbst aus den Dokumenten ab. "
+            "Beide Pole müssen positive, legitime Logiken beschreiben."
+        )
+
+    prompt = PDF_ANALYSIS_PROMPT.format(pole_instruction=pole_instruction)
+
+    full_prompt = f"""Hier sind die Dokumente:
+
+{pdf_text}
+
+---
+
+{prompt}
+"""
+
+    try:
+        client = anthropic.Anthropic()
+        response = client.messages.create(
+            model=MODEL_FAST,
+            max_tokens=2048,
+            messages=[{"role": "user", "content": full_prompt}],
+        )
+        return AnalysisResult(success=True, message=response.content[0].text)
+    except Exception as e:
+        return AnalysisResult(success=False, message=f"Fehler bei der PDF-Analyse: {e}")
