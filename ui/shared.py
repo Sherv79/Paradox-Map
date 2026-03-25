@@ -477,8 +477,7 @@ button[data-testid="baseButton-secondary"]:focus {
     border-radius: 8px !important;
     list-style: none !important;
 }
-[data-testid="stExpander"] > details > summary p,
-[data-testid="stExpander"] > details > summary span {
+[data-testid="stExpander"] > details > summary p {
     color: #1A1A1A !important;
     font-family: 'DM Sans', sans-serif !important;
 }

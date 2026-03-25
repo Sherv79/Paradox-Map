@@ -166,6 +166,10 @@ Design-Redesign is planned as a separate future step. Do not change the UI desig
 4. PDF-Flow (PDF document upload as input) — NEXT
 5. Design-Redesign (UI/UX overhaul)
 
+## CSS Notes
+
+- **Expander icon font**: Streamlit's `<summary>` element contains a `<span>` with Material Icons ligature text (e.g. `keyboard_arrow_down`). Never override `font-family` on `span` elements inside `[data-testid="stExpander"] > details > summary` — this replaces the icon font and renders the ligature text literally as visible artifacts. Only target `p` elements for font styling in expander summaries.
+
 ## Development Notes
 
 - After every major change: `git add -A && git commit` with descriptive message
