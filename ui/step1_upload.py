@@ -51,7 +51,7 @@ def _render_whiteboard_mode() -> None:
         if st.button(T["btn_generate"], type="primary", use_container_width=True):
             # Reset downstream state
             for key in ("step2_result", "polarity_data", "questionnaire_result",
-                        "questionnaire_data", "ppt_bytes", "zip_bytes"):
+                        "questionnaire_data", "ppt_simple_bytes", "ppt_full_bytes", "zip_bytes"):
                 st.session_state[key] = None
             for flag in ("form_initialized", "questionnaire_initialized"):
                 st.session_state[flag] = False

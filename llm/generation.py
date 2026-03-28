@@ -1,8 +1,10 @@
-import anthropic
+import logging
 
-from llm import MODEL_QUALITY
+from llm import MODEL_QUALITY, client
 from models import AnalysisResult
 from prompts import POLARITY_MAP_GENERATION_PROMPT, QUESTIONNAIRE_GENERATION_PROMPT, build_contextual_prompt
+
+logger = logging.getLogger(__name__)
 
 
 def generate_polarity_map(extraction_json: str, context: dict | None = None) -> AnalysisResult:
@@ -62,8 +64,6 @@ Alle Texte auf Deutsch.
 """
 
     try:
-        client = anthropic.Anthropic()
-
         response = client.messages.create(
             model=MODEL_QUALITY,
             max_tokens=4096,
@@ -78,9 +78,10 @@ Alle Texte auf Deutsch.
         return AnalysisResult(success=True, message=text)
 
     except Exception as e:
+        logger.exception("Error during polarity map generation")
         return AnalysisResult(
             success=False,
-            message=f"Error during polarity map generation: {e}",
+            message="Fehler bei der Map-Generierung. Bitte versuchen Sie es erneut.",
         )
 
 
@@ -100,8 +101,6 @@ def generate_questionnaire_items(polarity_map_json: str, context: dict | None = 
 """
 
     try:
-        client = anthropic.Anthropic()
-
         response = client.messages.create(
             model=MODEL_QUALITY,
             max_tokens=4096,
@@ -116,7 +115,8 @@ def generate_questionnaire_items(polarity_map_json: str, context: dict | None = 
         return AnalysisResult(success=True, message=text)
 
     except Exception as e:
+        logger.exception("Error during questionnaire generation")
         return AnalysisResult(
             success=False,
-            message=f"Fehler bei der Fragebogen-Generierung: {e}",
+            message="Fehler bei der Fragebogen-Generierung. Bitte versuchen Sie es erneut.",
         )

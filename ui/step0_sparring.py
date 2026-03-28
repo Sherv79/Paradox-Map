@@ -39,6 +39,7 @@ def render_step0() -> None:
             value=st.session_state.sparring_input_1,
             placeholder=T["sparring_placeholder"],
             height=150,
+            max_chars=5000,
             key="sparring_fresh_input_1",
         )
 
@@ -100,6 +101,7 @@ def render_step0() -> None:
             value=st.session_state.sparring_input_2,
             placeholder=T["sparring_answer_placeholder"],
             height=150,
+            max_chars=5000,
             key="sparring_phase2_input_2",
         )
 
@@ -153,7 +155,7 @@ def render_step0() -> None:
                 type="primary",
                 use_container_width=True,
             ):
-                with st.spinner(T["status_extract"]):
+                with st.spinner(T["status_extract_context"]):
                     context = extract_context_from_dialog(
                         st.session_state.sparring_input_1,
                         st.session_state.sparring_input_2,

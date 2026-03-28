@@ -1,13 +1,15 @@
 import base64
 import io
+import logging
 
-import anthropic
 import pdfplumber
 from PIL import Image, ImageOps
 
-from llm import MODEL_FAST
+from llm import MODEL_FAST, client
 from models import AnalysisResult
 from prompts import VISION_WORKSHOP_EXTRACTION_PROMPT
+
+logger = logging.getLogger(__name__)
 
 
 def compress_image(image: Image.Image, max_size_bytes: int = 4_500_000) -> Image.Image:
@@ -60,12 +62,7 @@ def analyze_workshop_image(image: Image.Image) -> AnalysisResult:
     image_data = base64.standard_b64encode(buffer.getvalue()).decode("utf-8")
     media_type = "image/jpeg"
 
-    print("Media type:", media_type)
-    print("Image length:", len(image_data))
-
     try:
-        client = anthropic.Anthropic()
-
         response = client.messages.create(
             model=MODEL_FAST,
             max_tokens=2048,
@@ -93,13 +90,22 @@ def analyze_workshop_image(image: Image.Image) -> AnalysisResult:
         return AnalysisResult(success=True, message=text)
 
     except Exception as e:
-        return AnalysisResult(success=False, message=f"Error during image analysis: {e}")
+        logger.exception("Error during image analysis")
+        return AnalysisResult(success=False, message="Fehler bei der Bildanalyse. Bitte versuchen Sie es erneut.")
+
+
+MAX_PDF_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB per file
 
 
 def extract_text_from_pdfs(pdf_files: list) -> str:
     """Extract text from one or more uploaded PDF files. Returns concatenated text with document separators."""
     all_texts = []
     for pdf_file in pdf_files:
+        file_size = getattr(pdf_file, 'size', None)
+        if file_size and file_size > MAX_PDF_SIZE_BYTES:
+            filename = getattr(pdf_file, 'name', 'Unbekannt')
+            all_texts.append(f"=== DOKUMENT: {filename} ===\n\n[Datei zu groß — max. 50 MB]")
+            continue
         try:
             with pdfplumber.open(pdf_file) as pdf:
                 doc_text = []
@@ -111,7 +117,8 @@ def extract_text_from_pdfs(pdf_files: list) -> str:
                 all_texts.append(f"=== DOKUMENT: {filename} ===\n\n" + "\n\n".join(doc_text))
         except Exception as e:
             filename = getattr(pdf_file, 'name', 'Unbekannt')
-            all_texts.append(f"=== DOKUMENT: {filename} ===\n\n[Fehler beim Lesen: {e}]")
+            logger.exception("Error reading PDF: %s", filename)
+            all_texts.append(f"=== DOKUMENT: {filename} ===\n\n[Fehler beim Lesen der Datei]")
 
     full_text = "\n\n".join(all_texts)
 
@@ -165,4 +172,5 @@ def analyze_pdf_content(pdf_text: str, custom_poles: dict | None = None) -> Anal
         )
         return AnalysisResult(success=True, message=response.content[0].text)
     except Exception as e:
-        return AnalysisResult(success=False, message=f"Fehler bei der PDF-Analyse: {e}")
+        logger.exception("Error during PDF analysis")
+        return AnalysisResult(success=False, message="Fehler bei der PDF-Analyse. Bitte versuchen Sie es erneut.")

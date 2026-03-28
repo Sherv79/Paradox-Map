@@ -1,11 +1,12 @@
 import json
+import logging
 import re
 
-import anthropic
-
-from llm import MODEL_FAST
+from llm import MODEL_FAST, client
 from models import AnalysisResult
 from prompts import SPARRING_PROMPT, SPARRING_SUMMARY_PROMPT, CONTEXT_EXTRACTION_PROMPT
+
+logger = logging.getLogger(__name__)
 
 
 def sparring_response(user_input: str) -> AnalysisResult:
@@ -16,7 +17,6 @@ def sparring_response(user_input: str) -> AnalysisResult:
 {user_input}
 """
     try:
-        client = anthropic.Anthropic()
         response = client.messages.create(
             model=MODEL_FAST,
             max_tokens=1024,
@@ -24,14 +24,14 @@ def sparring_response(user_input: str) -> AnalysisResult:
         )
         return AnalysisResult(success=True, message=response.content[0].text)
     except Exception as e:
-        return AnalysisResult(success=False, message=f"Fehler beim Sparring: {e}")
+        logger.exception("Error during sparring response")
+        return AnalysisResult(success=False, message="Fehler beim Sparring. Bitte versuchen Sie es erneut.")
 
 
 def sparring_summary(input_1: str, input_2: str) -> AnalysisResult:
     """Generate a final context summary from the full sparring dialog."""
     prompt = SPARRING_SUMMARY_PROMPT.format(input_1=input_1, input_2=input_2)
     try:
-        client = anthropic.Anthropic()
         response = client.messages.create(
             model=MODEL_FAST,
             max_tokens=1024,
@@ -39,14 +39,14 @@ def sparring_summary(input_1: str, input_2: str) -> AnalysisResult:
         )
         return AnalysisResult(success=True, message=response.content[0].text)
     except Exception as e:
-        return AnalysisResult(success=False, message=f"Fehler bei der Zusammenfassung: {e}")
+        logger.exception("Error during sparring summary")
+        return AnalysisResult(success=False, message="Fehler bei der Zusammenfassung. Bitte versuchen Sie es erneut.")
 
 
 def extract_context_from_dialog(input_1: str, input_2: str) -> dict:
     """Extract structured context dict from the sparring dialog."""
     prompt = CONTEXT_EXTRACTION_PROMPT.format(input_1=input_1, input_2=input_2)
     try:
-        client = anthropic.Anthropic()
         response = client.messages.create(
             model=MODEL_FAST,
             max_tokens=1024,
@@ -62,6 +62,7 @@ def extract_context_from_dialog(input_1: str, input_2: str) -> dict:
             text = text[start : end + 1]
         return json.loads(text)
     except Exception:
+        logger.exception("Error during context extraction, using fallback")
         return {
             "branche": "",
             "hierarchieebene": "",

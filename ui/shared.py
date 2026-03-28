@@ -1,5 +1,6 @@
 import io
 import json
+import logging
 import re
 import threading
 import time
@@ -8,10 +9,10 @@ import zipfile
 import streamlit as st
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 from ppt_builder import build_powerpoint, build_powerpoint_simple
 
-TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch_2.pptx"
-OUTPUT_PATH = Path(__file__).resolve().parent.parent / "output_polarity_map.pptx"
 TEMPLATE_SIMPLE_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch.pptx"
 TEMPLATE_FULL_PATH = Path(__file__).resolve().parent.parent / "__Beispielmaps_deutsch_2.pptx"
 OUTPUT_SIMPLE_PATH = Path(__file__).resolve().parent.parent / "output_polarity_map_simple.pptx"
@@ -92,7 +93,7 @@ T = {
     "btn_nein_anpassen": "Nein, anpassen",
     "status_sparring": "Analysiere Kontext...",
     "status_summary": "Erstelle Zusammenfassung...",
-    "status_extract": "Extrahiere Kontext...",
+    "status_extract_context": "Extrahiere Kontext...",
     "sparring_label_input1": "Ihre Kontextbeschreibung",
     "sparring_label_input2": "Ihre Antworten auf die Rückfragen",
     "quadrant_upside_a": "Vorteile — {pole}",
@@ -718,6 +719,7 @@ def build_ppt_bytes() -> tuple[bytes, bytes] | None:
             full_bytes = f.read()
         return simple_bytes, full_bytes
     except Exception:
+        logger.exception("Error building PowerPoint files")
         return None
 
 

@@ -9,6 +9,7 @@ from ui.shared import (
     TEMPLATE_SIMPLE_PATH,
     TEMPLATE_FULL_PATH,
     animate_progress,
+    collect_form_data,
     parse_json_robust,
     render_list_inputs,
     init_questionnaire_state,
@@ -121,9 +122,10 @@ def render_step2() -> None:
             progress_bar = st.progress(0)
             status = st.empty()
 
+            current_map_json = json.dumps(collect_form_data(), ensure_ascii=False)
             q_result = animate_progress(
                 generate_questionnaire_items,
-                (st.session_state.step2_result.message, st.session_state.get("workshop_context")),
+                (current_map_json, st.session_state.get("workshop_context")),
                 progress_bar, status,
                 T["status_questionnaire"],
                 0, 90, step_ms=220,
