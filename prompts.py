@@ -98,9 +98,28 @@ Längenbegrenzung GPS und DF:
   SCHLECHT: "Eine Vorstandskultur, die sowohl psychologische Sicherheit als auch konstruktive Auseinandersetzung ermöglicht und damit nachhaltige Integrationserfolge schafft."
   GUT: "Nachhaltige Integration durch Balance von Innovation und Prozesssicherheit."
 
+  KRITISCHE GPS-REGEL — Spannung offenhalten, nicht auflösen:
+  Das GPS beschreibt, was möglich wird, wenn die Spannung NAVIGIERT wird — nicht, wenn sie gelöst wird.
+  Begriffe wie "Kollaboration", "Integration", "optimale Verbindung", "Synthese", "Zusammenspiel" sind WARNSIGNALE — sie suggerieren, dass die Polarität ein lösbares Problem ist. Eine Polarität ist eine fortlaufende Spannung, die nur navigiert werden kann.
+
+  SCHLECHT: "Entscheidungsqualität und intelligente Mensch-Maschine-Kollaboration"
+  → "Kollaboration" verspricht Auflösung der Spannung.
+  GUT: "Entscheidungen, die sachlich begründbar und organisational anschlussfähig bleiben"
+  → Hält offen, dass die Spannung zwischen den Begründungslogiken bestehen bleibt.
+
+  Testfrage: Suggeriert das GPS, dass es einen Zustand gibt, in dem die Spannung nicht mehr existiert? Wenn ja → umformulieren.
+
 - DF: Maximal 10–15 Wörter. Ein einziger schlimmster Fall. KEIN "oder", KEIN Doppelgedanke.
   SCHLECHT: "Das Unternehmen verliert seine Innovationskraft oder scheitert an mangelnder Compliance."
   GUT: "Die Organisation wird durch ungelöste Kulturkonflikte handlungsunfähig."
+
+  KRITISCHE DF-REGEL — Paradox-Spezifität:
+  Die Deeper Fear muss den schlimmsten Fall DIESER SPEZIFISCHEN Polarität beschreiben — nicht einen generischen Worst Case.
+
+  Testfrage: Könnte diese Deeper Fear auch unter einer völlig anderen Polarity Map stehen? Wenn ja → nicht spezifisch genug.
+
+  SCHLECHT (generisch): "Entscheidungsparalyse und Vertrauensverlust" → könnte unter jeder Map stehen.
+  GUT (spezifisch): "Die Organisation kann ihre eigenen Entscheidungen nicht mehr erklären" → trifft den spezifischen systemischen GAU dieser Polarität.
 
 ---
 
@@ -169,6 +188,23 @@ Wenn ein Workshop-Kontext mitgeliefert wird, MÜSSEN die Items diesen Kontext wi
 
 Die Items sollen so klingen, als wären sie FÜR GENAU DIESE Organisation geschrieben — nicht für eine generische Vorlage.
 
+---
+
+Dimensionstrennung (wenn zutreffend)
+
+Wenn aus dem Kontext erkennbar ist, dass die Polarity Map einer bestimmten Sinndimension zugeordnet ist, müssen ALLE Items trennscharf in dieser Dimension bleiben.
+
+Orientierung:
+- Sachdimension: "Was gilt als Wissen? Was ist eine gültige Entscheidungsgrundlage?"
+- Sozialdimension: "Wem wird zugerechnet? Wer trägt Verantwortung?"
+- Zeitdimension: "Operative Steuerung vs. Lernfähigkeit über Zeit?"
+
+Wenn ein Item in eine andere Sinndimension rutscht, formuliere es so um, dass es in der zugeordneten Dimension bleibt.
+
+Beispiel (Map in der Sachdimension):
+FALSCH: "Verantwortung wird an Technologie delegiert" → Sozialdimension (Zurechnung)
+RICHTIG: "Entscheidungen lassen sich nicht mehr kausal begründen" → Sachdimension (Begründungslogik)
+
 Deeper Fear: IMMER ein einzelner Satz, KEIN Doppelgedanke mit "oder". Formuliere die schlimmste systemische Konsequenz wenn BEIDE Pole vernachlässigt werden.
 
 ---
@@ -197,10 +233,12 @@ E. Assessment-ready Polarity Map
 F. Qualitätscheck
 
 - Polbenennung tragfähig?
-- GPS/DF stimmig?
+- GPS hält Spannung offen? (kein Lösungs-/Syntheseversprechen)
+- DF paradox-spezifisch? (könnte nicht unter anderer Map stehen)
 - Parallelität gegeben?
 - Diagonalität gegeben?
 - Beobachtbarkeit ausreichend?
+- Early Warnings sind Qualitätsindikatoren? (nicht nur Performance-Metriken wie "langsamer"/"teurer", sondern Warnsignale für das Kippen der produktiven Spannung — z.B. dass ein Pol zur Immunisierungsstrategie wird)
 
 G. Offene Annahmen
 

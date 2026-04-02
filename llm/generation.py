@@ -52,10 +52,12 @@ Verwende exakt diese JSON-Struktur:
   "facets": ["Facette 1", "Facette 2", "Facette 3"],
   "quality_check": {{
     "polbenennung_tragfaehig": true,
-    "gps_df_stimmig": true,
+    "gps_haelt_spannung_offen": true,
+    "df_paradox_spezifisch": true,
     "parallelitaet": true,
     "diagonalitaet": true,
-    "beobachtbarkeit": true
+    "beobachtbarkeit": true,
+    "early_warnings_qualitaetsindikatoren": true
   }},
   "open_assumptions": ["Annahme 1", "Annahme 2"]
 }}
