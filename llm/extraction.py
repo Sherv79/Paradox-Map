@@ -2,6 +2,7 @@ import base64
 import io
 import logging
 
+import anthropic
 import pdfplumber
 from PIL import Image, ImageOps
 
